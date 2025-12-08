@@ -31,15 +31,22 @@ Future<void> setupDependencyInjection() async {
     () => AuthRemoteDataSource(getIt<DioClient>()),
   );
 
+  // Mock Auth Data Source (for development/testing)
+  getIt.registerLazySingleton<AuthMockDataSource>(
+    () => AuthMockDataSource(tokenStorage: getIt<TokenStorage>()),
+  );
+
   getIt.registerLazySingleton<UserRemoteDataSource>(
     () => UserRemoteDataSource(getIt<DioClient>()),
   );
 
   // Repositories
+  // Using mock auth in development - switch to remote when you have real API
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
-      getIt<AuthRemoteDataSource>(),
-      getIt<TokenStorage>(),
+      // remoteDataSource: getIt<AuthRemoteDataSource>(), // Uncomment when using real API
+      mockDataSource: getIt<AuthMockDataSource>(), // Comment out when using real API
+      tokenStorage: getIt<TokenStorage>(),
     ),
   );
 
