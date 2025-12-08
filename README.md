@@ -2,12 +2,33 @@
 
 A production-ready Flutter application demonstrating Clean Architecture with feature-based packages using Melos for monorepo management.
 
+## 🚀 Quick Start
+
+### Try the Mock Authentication System
+
+This project includes a **fully functional mock authentication** system - no backend required!
+
+```bash
+cd packages/app
+flutter run
+```
+
+**Demo Credentials** (tap on login page to auto-fill):
+
+- **Demo User**: `demo@test.com` / `password123`
+- **Admin User**: `admin@test.com` / `admin123`
+- **Test User**: `test@test.com` / `test123`
+
+📚 **[Complete Mock Auth Guide](MOCK_AUTH_GUIDE.md)** - Learn how to use and switch to real API
+
 ## ✨ Features
 
 - ✅ **Feature-Based Modular Architecture** - Complete isolation of features with independent domain/data/presentation layers
 - ✅ **Melos Monorepo** - Multi-package workspace management
 - ✅ **Clean Architecture** - Strict separation of concerns across all layers
 - ✅ **BLoC Pattern** - State management with flutter_bloc
+- ✅ **Mock Authentication** - Fully functional auth without backend (easy switch to real API)
+- ✅ **Splash & Onboarding** - Professional app initialization flow
 - ✅ **Centralized Network Layer** - Dio-based HTTP client with interceptors
 - ✅ **Centralized Routing** - App-wide route management in core package
 - ✅ **Token Management** - Automatic token injection and refresh with request queuing

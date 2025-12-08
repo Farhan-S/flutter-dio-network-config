@@ -18,7 +18,29 @@ class HomePage extends StatelessWidget {
         title: const Text('Clean Architecture Demo'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: BlocBuilder<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          // Handle logout success
+          if (state is AuthUnauthenticated) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Logged out successfully'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+            // Navigate to login page
+            AppRoutes.navigateToLogin(context);
+          }
+          // Handle auth errors
+          else if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           return SingleChildScrollView(
             child: Padding(

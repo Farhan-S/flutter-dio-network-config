@@ -1,5 +1,6 @@
 library;
 
+export 'data/datasources/remote/auth_mock_datasource.dart';
 // Data Layer - Data Sources
 export 'data/datasources/remote/auth_remote_datasource.dart';
 // Data Layer - Models

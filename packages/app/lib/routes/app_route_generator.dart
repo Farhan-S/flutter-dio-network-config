@@ -40,10 +40,7 @@ class AppRouteGenerator {
         );
 
       case AppRoutes.home:
-        return _createRoute(
-          HomePage(dioClient: getIt<DioClient>()),
-          settings,
-        );
+        return _createRoute(HomePage(dioClient: getIt<DioClient>()), settings);
 
       case AppRoutes.networkTest:
         return _createRoute(
@@ -55,10 +52,7 @@ class AppRouteGenerator {
         );
 
       case AppRoutes.login:
-        return _createRoute(
-          const LoginPage(),
-          settings,
-        );
+        return _createRoute(const LoginPage(), settings);
 
       default:
         return _createErrorRoute(settings.name);

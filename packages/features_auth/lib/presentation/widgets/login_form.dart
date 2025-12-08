@@ -1,6 +1,6 @@
+import 'package:features_auth/features_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:features_auth/features_auth.dart';
 
 /// Login form widget
 class LoginForm extends StatefulWidget {
@@ -26,11 +26,11 @@ class _LoginFormState extends State<LoginForm> {
   void _onLoginPressed() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
-            AuthLoginRequested(
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-            ),
-          );
+        AuthLoginRequested(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        ),
+      );
     }
   }
 
@@ -42,35 +42,25 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 40),
-          
+
           // Logo or Title
-          const Icon(
-            Icons.lock_outline,
-            size: 80,
-            color: Colors.blue,
-          ),
+          const Icon(Icons.lock_outline, size: 80, color: Colors.blue),
           const SizedBox(height: 24),
-          
+
           const Text(
             'Welcome Back',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
-          
+
           Text(
             'Sign in to continue',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
-          
+
           // Email field
           TextFormField(
             controller: _emailController,
@@ -91,7 +81,7 @@ class _LoginFormState extends State<LoginForm> {
             },
           ),
           const SizedBox(height: 16),
-          
+
           // Password field
           TextFormField(
             controller: _passwordController,
@@ -122,7 +112,7 @@ class _LoginFormState extends State<LoginForm> {
             },
           ),
           const SizedBox(height: 24),
-          
+
           // Login button
           ElevatedButton(
             onPressed: _onLoginPressed,
@@ -132,14 +122,11 @@ class _LoginFormState extends State<LoginForm> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
-              'Login',
-              style: TextStyle(fontSize: 16),
-            ),
+            child: const Text('Login', style: TextStyle(fontSize: 16)),
           ),
           const SizedBox(height: 16),
-          
-          // Info card
+
+          // Demo credentials info card
           Card(
             color: Colors.blue[50],
             child: Padding(
@@ -149,23 +136,47 @@ class _LoginFormState extends State<LoginForm> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.info_outline, color: Colors.blue[700]),
+                      Icon(
+                        Icons.info_outline,
+                        color: Colors.blue[700],
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'Demo Credentials',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          fontSize: 16,
                           color: Colors.blue[900],
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 12),
+                  _buildDemoCredentialRow(
+                    'Demo User',
+                    'demo@test.com',
+                    'password123',
+                  ),
+                  const Divider(height: 16),
+                  _buildDemoCredentialRow(
+                    'Admin User',
+                    'admin@test.com',
+                    'admin123',
+                  ),
+                  const Divider(height: 16),
+                  _buildDemoCredentialRow(
+                    'Test User',
+                    'test@test.com',
+                    'test123',
+                  ),
+                  const SizedBox(height: 12),
                   Text(
-                    'Email: demo@example.com\nPassword: password123',
+                    'Tap any credential to auto-fill the form',
                     style: TextStyle(
-                      color: Colors.blue[800],
-                      height: 1.5,
+                      fontSize: 12,
+                      color: Colors.blue[700],
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
                 ],
@@ -173,6 +184,58 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDemoCredentialRow(String name, String email, String password) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _emailController.text = email;
+          _passwordController.text = password;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Filled credentials for $name'),
+            duration: const Duration(seconds: 1),
+            backgroundColor: Colors.green,
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue[900],
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    email,
+                    style: TextStyle(color: Colors.blue[700], fontSize: 13),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Password: $password',
+                    style: TextStyle(color: Colors.blue[600], fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.touch_app, color: Colors.blue[400], size: 20),
+          ],
+        ),
       ),
     );
   }
