@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../../domain/entities/onboarding_page_entity.dart';
 
 /// Widget to display onboarding page content
 class OnboardingContent extends StatelessWidget {
   final OnboardingPageEntity page;
 
-  const OnboardingContent({
-    super.key,
-    required this.page,
-  });
+  const OnboardingContent({super.key, required this.page});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +24,7 @@ class OnboardingContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(100),
             ),
             child: Center(
-              child: Text(
-                page.image,
-                style: const TextStyle(fontSize: 80),
-              ),
+              child: Text(page.image, style: const TextStyle(fontSize: 80)),
             ),
           ),
           const SizedBox(height: 48),
@@ -38,9 +33,9 @@ class OnboardingContent extends StatelessWidget {
           Text(
             page.title,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                ),
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -49,9 +44,9 @@ class OnboardingContent extends StatelessWidget {
           Text(
             page.description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey[700],
-                  height: 1.5,
-                ),
+              color: Colors.grey[700],
+              height: 1.5,
+            ),
             textAlign: TextAlign.center,
           ),
         ],

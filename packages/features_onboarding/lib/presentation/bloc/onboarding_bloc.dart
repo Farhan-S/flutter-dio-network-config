@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/usecases/complete_onboarding_usecase.dart';
+
 import '../../domain/repositories/onboarding_repository.dart';
+import '../../domain/usecases/complete_onboarding_usecase.dart';
 import 'onboarding_event.dart';
 import 'onboarding_state.dart';
 
@@ -37,17 +38,12 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   }
 
   /// Go to next page
-  void _onNextPage(
-    NextPageEvent event,
-    Emitter<OnboardingState> emit,
-  ) {
+  void _onNextPage(NextPageEvent event, Emitter<OnboardingState> emit) {
     if (state is OnboardingLoaded) {
       final currentState = state as OnboardingLoaded;
-      
+
       if (!currentState.isLastPage) {
-        emit(currentState.copyWith(
-          currentPage: currentState.currentPage + 1,
-        ));
+        emit(currentState.copyWith(currentPage: currentState.currentPage + 1));
       } else {
         // Last page, complete onboarding
         add(const CompleteOnboardingEvent());
@@ -56,26 +52,18 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   }
 
   /// Go to previous page
-  void _onPreviousPage(
-    PreviousPageEvent event,
-    Emitter<OnboardingState> emit,
-  ) {
+  void _onPreviousPage(PreviousPageEvent event, Emitter<OnboardingState> emit) {
     if (state is OnboardingLoaded) {
       final currentState = state as OnboardingLoaded;
-      
+
       if (!currentState.isFirstPage) {
-        emit(currentState.copyWith(
-          currentPage: currentState.currentPage - 1,
-        ));
+        emit(currentState.copyWith(currentPage: currentState.currentPage - 1));
       }
     }
   }
 
   /// Page changed by user swipe
-  void _onPageChanged(
-    PageChangedEvent event,
-    Emitter<OnboardingState> emit,
-  ) {
+  void _onPageChanged(PageChangedEvent event, Emitter<OnboardingState> emit) {
     if (state is OnboardingLoaded) {
       final currentState = state as OnboardingLoaded;
       emit(currentState.copyWith(currentPage: event.pageIndex));

@@ -1,6 +1,7 @@
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:core/core.dart';
+
 import '../bloc/onboarding_bloc.dart';
 import '../bloc/onboarding_event.dart';
 import '../bloc/onboarding_state.dart';
@@ -54,9 +55,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           child: BlocBuilder<OnboardingBloc, OnboardingState>(
             builder: (context, state) {
               if (state is OnboardingLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
 
               if (state is OnboardingError) {
@@ -78,9 +77,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       const SizedBox(height: 24),
                       ElevatedButton(
                         onPressed: () {
-                          context
-                              .read<OnboardingBloc>()
-                              .add(const LoadOnboardingPagesEvent());
+                          context.read<OnboardingBloc>().add(
+                            const LoadOnboardingPagesEvent(),
+                          );
                         },
                         child: const Text('Retry'),
                       ),
@@ -97,9 +96,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       alignment: Alignment.topRight,
                       child: TextButton(
                         onPressed: () {
-                          context
-                              .read<OnboardingBloc>()
-                              .add(const SkipOnboardingEvent());
+                          context.read<OnboardingBloc>().add(
+                            const SkipOnboardingEvent(),
+                          );
                         },
                         child: const Text('Skip'),
                       ),
@@ -111,14 +110,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         controller: _pageController,
                         itemCount: state.pages.length,
                         onPageChanged: (index) {
-                          context
-                              .read<OnboardingBloc>()
-                              .add(PageChangedEvent(index));
+                          context.read<OnboardingBloc>().add(
+                            PageChangedEvent(index),
+                          );
                         },
                         itemBuilder: (context, index) {
-                          return OnboardingContent(
-                            page: state.pages[index],
-                          );
+                          return OnboardingContent(page: state.pages[index]);
                         },
                       ),
                     ),
@@ -148,9 +145,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           if (!state.isFirstPage)
                             TextButton.icon(
                               onPressed: () {
-                                context
-                                    .read<OnboardingBloc>()
-                                    .add(const PreviousPageEvent());
+                                context.read<OnboardingBloc>().add(
+                                  const PreviousPageEvent(),
+                                );
                               },
                               icon: const Icon(Icons.arrow_back),
                               label: const Text('Back'),
@@ -161,9 +158,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           // Next/Get Started button
                           ElevatedButton(
                             onPressed: () {
-                              context
-                                  .read<OnboardingBloc>()
-                                  .add(const NextPageEvent());
+                              context.read<OnboardingBloc>().add(
+                                const NextPageEvent(),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
@@ -177,9 +174,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  state.isLastPage ? 'Get Started' : 'Next',
-                                ),
+                                Text(state.isLastPage ? 'Get Started' : 'Next'),
                                 const SizedBox(width: 8),
                                 Icon(
                                   state.isLastPage

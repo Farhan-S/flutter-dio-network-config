@@ -87,10 +87,7 @@ Future<void> setupDependencyInjection() async {
 
   // App Init Data Source
   getIt.registerLazySingleton<AppInitDataSource>(
-    () => AppInitDataSource(
-      getIt<TokenStorage>(),
-      getIt<SharedPreferences>(),
-    ),
+    () => AppInitDataSource(getIt<TokenStorage>(), getIt<SharedPreferences>()),
   );
 
   // App Initialization Repository

@@ -18,12 +18,12 @@ class AppInitEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        isInitialized,
-        isAuthenticated,
-        hasCompletedOnboarding,
-        userId,
-        errorMessage,
-      ];
+    isInitialized,
+    isAuthenticated,
+    hasCompletedOnboarding,
+    userId,
+    errorMessage,
+  ];
 
   @override
   String toString() {

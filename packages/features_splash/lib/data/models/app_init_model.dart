@@ -54,7 +54,8 @@ class AppInitModel extends AppInitEntity {
     return AppInitModel(
       isInitialized: isInitialized ?? this.isInitialized,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
-      hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
+      hasCompletedOnboarding:
+          hasCompletedOnboarding ?? this.hasCompletedOnboarding,
       userId: userId ?? this.userId,
       errorMessage: errorMessage ?? this.errorMessage,
     );

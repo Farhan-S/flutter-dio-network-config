@@ -166,6 +166,7 @@ return const [
 ### Change Colors/Theme
 
 Edit `onboarding_page.dart` and `onboarding_content.dart` to customize:
+
 - Background colors
 - Text styles
 - Button styles
@@ -188,22 +189,27 @@ Image.asset(
 ## Features
 
 ### Swipe Navigation
+
 - Users can swipe left/right to navigate
 - Smooth page transitions
 
 ### Page Indicators
+
 - Shows current page position
 - Animated transitions
 
 ### Skip Button
+
 - Allows users to skip onboarding
 - Marks onboarding as completed
 
 ### Get Started Button
+
 - On last page, shows "Get Started"
 - Completes onboarding and navigates
 
 ### Persistent Storage
+
 - Uses SharedPreferences
 - Onboarding shown only once
 - Can be reset by clearing app data

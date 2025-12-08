@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../domain/entities/onboarding_page_entity.dart';
 
 /// Base class for onboarding states
@@ -24,10 +25,7 @@ class OnboardingLoaded extends OnboardingState {
   final List<OnboardingPageEntity> pages;
   final int currentPage;
 
-  const OnboardingLoaded({
-    required this.pages,
-    this.currentPage = 0,
-  });
+  const OnboardingLoaded({required this.pages, this.currentPage = 0});
 
   bool get isFirstPage => currentPage == 0;
   bool get isLastPage => currentPage == pages.length - 1;

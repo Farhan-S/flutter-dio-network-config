@@ -1,5 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:core/core.dart';
+import 'package:dartz/dartz.dart';
+
 import '../../domain/entities/onboarding_page_entity.dart';
 import '../../domain/repositories/onboarding_repository.dart';
 import '../datasources/onboarding_local_datasource.dart';
@@ -11,7 +12,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   OnboardingRepositoryImpl(this.localDataSource);
 
   @override
-  Future<Either<ApiException, List<OnboardingPageEntity>>> getOnboardingPages() async {
+  Future<Either<ApiException, List<OnboardingPageEntity>>>
+  getOnboardingPages() async {
     try {
       final pages = await localDataSource.getOnboardingPages();
       return Right(pages);

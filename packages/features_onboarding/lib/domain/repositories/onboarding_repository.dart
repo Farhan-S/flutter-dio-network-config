@@ -1,5 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:core/core.dart';
+import 'package:dartz/dartz.dart';
+
 import '../entities/onboarding_page_entity.dart';
 
 /// Repository interface for onboarding
