@@ -4,7 +4,35 @@ A production-ready Flutter application demonstrating Clean Architecture with fea
 
 ## 🚀 Quick Start
 
-### Try the Mock Authentication System
+### 1. Bootstrap All Packages
+
+**Option 1: Cross-platform Dart script (Recommended)**
+
+```bash
+dart bootstrap.dart
+```
+
+**Option 2: Linux/macOS shell script**
+
+```bash
+./bootstrap.sh
+```
+
+**Option 3: Windows batch script**
+
+```cmd
+bootstrap.bat
+```
+
+**Option 4: Manual installation**
+
+```bash
+cd packages/app && flutter pub get
+cd packages/core && dart pub get
+# ... etc
+```
+
+### 2. Try the Mock Authentication System
 
 This project includes a **fully functional mock authentication** system - no backend required!
 

@@ -4,6 +4,41 @@ A command-line tool to generate feature packages with Clean Architecture for you
 
 **Maloc** = **Melos** + **BLoC** - The perfect combination for modular Flutter development!
 
+## ⚡ Quick Start
+
+### 1. Bootstrap the workspace (first time only)
+
+From the project root:
+
+```bash
+# Cross-platform (works on Windows, macOS, Linux)
+dart bootstrap.dart
+
+# Or use platform-specific scripts
+./bootstrap.sh      # Linux/macOS
+bootstrap.bat       # Windows
+```
+
+### 2. Install Maloc CLI
+
+```bash
+cd cli
+dart pub global activate --source path .
+```
+
+### 3. Create features instantly
+
+```bash
+maloc create --name products
+```
+
+✨ **Everything is automated:**
+
+- ✅ Creates Clean Architecture structure
+- ✅ Installs feature dependencies
+- ✅ Registers routes in app_routes.dart
+- ✅ Registers routes in app_route_generator.dart
+
 ## Installation
 
 ### Option 1: Activate globally (Recommended)

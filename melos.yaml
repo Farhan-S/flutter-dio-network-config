@@ -2,16 +2,31 @@ name: dio_network_config
 
 packages:
   - packages/**
+  - cli
+
+ide:
+  intellij: true
 
 scripts:
+  # Bootstrap all packages (cross-platform Dart script)
+  bootstrap:
+    run: dart bootstrap.dart
+    description: Bootstrap all packages by getting their dependencies
+
   # Clean all packages
   clean:
-    run: melos exec -- "flutter clean"
+    run: |
+      for dir in packages/*/; do
+        if [ -f "$dir/pubspec.yaml" ]; then
+          echo "Cleaning ${dir%/}"
+          cd "$dir" && flutter clean && cd - > /dev/null
+        fi
+      done
     description: Clean all packages
 
-  # Get dependencies
+  # Get dependencies (same as bootstrap)
   get:
-    run: melos exec -- "flutter pub get"
+    run: dart bootstrap.dart
     description: Get dependencies for all packages
 
   # Analyze all packages

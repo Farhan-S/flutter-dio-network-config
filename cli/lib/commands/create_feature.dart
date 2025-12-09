@@ -123,6 +123,11 @@ class CreateFeatureCommand {
     _registerRouteInGenerator(snakeName, pascalName, camelName);
     Logger.success('Route registered in app_route_generator.dart');
 
+    // Install dependencies
+    Logger.step('Installing dependencies...');
+    _installDependencies(featurePath);
+    Logger.success('Dependencies installed');
+
     Logger.header('Feature Created Successfully! 🎉');
 
     print('''
@@ -154,11 +159,11 @@ Next steps:
      () => ${pascalName}Bloc(getIt<Get${pascalName}UseCase>()),
    );$_reset
 
-3. Run: ${_cyan}flutter pub get$_reset in the feature package
-
-${_green}✨ Routes have been automatically registered in:$_reset
-   • core/lib/src/routes/app_routes.dart
-   • app/lib/routes/app_route_generator.dart
+${_green}✨ What was done automatically:$_reset
+   • Created complete Clean Architecture structure
+   • Installed all feature dependencies
+   • Registered routes in app_routes.dart
+   • Registered routes in app_route_generator.dart
 
 Feature location: ${_green}$featurePath$_reset
 ''');
@@ -383,6 +388,25 @@ Feature location: ${_green}$featurePath$_reset
       }
     } catch (e) {
       Logger.error('Error registering route in app_route_generator.dart: $e');
+    }
+  }
+
+  void _installDependencies(String featurePath) {
+    try {
+      final result = Process.runSync(
+        'dart',
+        ['pub', 'get'],
+        workingDirectory: featurePath,
+        runInShell: true,
+      );
+
+      if (result.exitCode != 0) {
+        Logger.warning('Failed to install dependencies automatically');
+        Logger.warning('Please run: cd $featurePath && dart pub get');
+      }
+    } catch (e) {
+      Logger.warning('Could not install dependencies: $e');
+      Logger.warning('Please run: cd $featurePath && dart pub get');
     }
   }
 
