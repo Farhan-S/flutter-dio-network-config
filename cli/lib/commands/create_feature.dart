@@ -280,41 +280,43 @@ Feature location: ${_green}$featurePath$_reset
 
       // Check if route already registered
       if (content.contains("case AppRoutes.$camelName:")) {
-        Logger.warning('Route $camelName already registered in switch statement');
+        Logger.warning(
+            'Route $camelName already registered in switch statement');
         return;
       }
 
-    // 1. Add import for the feature
-    final importsEndPattern = "import '../injection_container.dart';";
-    final importIndex = content.indexOf(importsEndPattern);
+      // 1. Add import for the feature
+      final importsEndPattern = "import '../injection_container.dart';";
+      final importIndex = content.indexOf(importsEndPattern);
 
-    if (importIndex != -1) {
-      final lineEnd = content.indexOf('\n', importIndex);
-      final importInsertPosition = lineEnd + 1;
-      final featureImport =
-          "import 'package:features_$snakeName/features_$snakeName.dart';\n";
+      if (importIndex != -1) {
+        final lineEnd = content.indexOf('\n', importIndex);
+        final importInsertPosition = lineEnd + 1;
+        final featureImport =
+            "import 'package:features_$snakeName/features_$snakeName.dart';\n";
 
-      // Only add if import doesn't exist
-      if (!content.contains(featureImport.trim())) {
-        content = content.substring(0, importInsertPosition) +
-            featureImport +
-            content.substring(importInsertPosition);
-        wasModified = true;
+        // Only add if import doesn't exist
+        if (!content.contains(featureImport.trim())) {
+          content = content.substring(0, importInsertPosition) +
+              featureImport +
+              content.substring(importInsertPosition);
+          wasModified = true;
+        }
+      } else {
+        Logger.warning(
+            'Could not find import section in app_route_generator.dart');
       }
-    } else {
-      Logger.warning('Could not find import section in app_route_generator.dart');
-    }
 
-    // 2. Add case to switch statement
-    final switchInsertPattern = "case AppRoutes.login:";
-    final switchIndex = content.indexOf(switchInsertPattern);
+      // 2. Add case to switch statement
+      final switchInsertPattern = "case AppRoutes.login:";
+      final switchIndex = content.indexOf(switchInsertPattern);
 
-    if (switchIndex != -1) {
-      // Find the end of the login case
-      final loginCaseEnd = content.indexOf("default:", switchIndex);
+      if (switchIndex != -1) {
+        // Find the end of the login case
+        final loginCaseEnd = content.indexOf("default:", switchIndex);
 
-      if (loginCaseEnd != -1) {
-        final newCase = '''
+        if (loginCaseEnd != -1) {
+          final newCase = '''
 
       case AppRoutes.$camelName:
         return _createRoute(
@@ -326,31 +328,31 @@ Feature location: ${_green}$featurePath$_reset
         );
 ''';
 
-        content = content.substring(0, loginCaseEnd) +
-            newCase +
-            '\n      ' +
-            content.substring(loginCaseEnd);
-        wasModified = true;
+          content = content.substring(0, loginCaseEnd) +
+              newCase +
+              '\n      ' +
+              content.substring(loginCaseEnd);
+          wasModified = true;
+        } else {
+          Logger.warning('Could not find default case in switch statement');
+        }
       } else {
-        Logger.warning('Could not find default case in switch statement');
+        Logger.warning('Could not find login case in switch statement');
       }
-    } else {
-      Logger.warning('Could not find login case in switch statement');
-    }
 
-    // 3. Add route registration in registerAllRoutes method
-    final registerRoutesPattern =
-        "// Auth routes can be registered similarly\n    AppRouteRegistry.registerRoute(";
-    final registerIndex = content.indexOf(registerRoutesPattern);
+      // 3. Add route registration in registerAllRoutes method
+      final registerRoutesPattern =
+          "// Auth routes can be registered similarly\n    AppRouteRegistry.registerRoute(";
+      final registerIndex = content.indexOf(registerRoutesPattern);
 
-    if (registerIndex != -1) {
-      // Find the end of login route registration
-      final loginRegisterEnd = content.indexOf(");", registerIndex);
-      if (loginRegisterEnd != -1) {
-        final semicolonEnd = content.indexOf(";", loginRegisterEnd);
-        final insertPosition = semicolonEnd + 1;
+      if (registerIndex != -1) {
+        // Find the end of login route registration
+        final loginRegisterEnd = content.indexOf(");", registerIndex);
+        if (loginRegisterEnd != -1) {
+          final semicolonEnd = content.indexOf(";", loginRegisterEnd);
+          final insertPosition = semicolonEnd + 1;
 
-        final newRegistration = '''
+          final newRegistration = '''
 
     
     // ${pascalName} route
@@ -365,20 +367,20 @@ Feature location: ${_green}$featurePath$_reset
       ),
     );''';
 
-        content = content.substring(0, insertPosition) +
-            newRegistration +
-            content.substring(insertPosition);
-        wasModified = true;
+          content = content.substring(0, insertPosition) +
+              newRegistration +
+              content.substring(insertPosition);
+          wasModified = true;
+        } else {
+          Logger.warning('Could not find login route registration end');
+        }
       } else {
-        Logger.warning('Could not find login route registration end');
+        Logger.warning('Could not find route registration section');
       }
-    } else {
-      Logger.warning('Could not find route registration section');
-    }
 
-    if (wasModified) {
-      routeGeneratorFile.writeAsStringSync(content);
-    }
+      if (wasModified) {
+        routeGeneratorFile.writeAsStringSync(content);
+      }
     } catch (e) {
       Logger.error('Error registering route in app_route_generator.dart: $e');
     }

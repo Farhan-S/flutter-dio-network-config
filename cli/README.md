@@ -103,11 +103,13 @@ packages/features_products/
 The CLI automatically:
 
 1. **Adds route constant** to `core/lib/src/routes/app_routes.dart`:
+
    ```dart
    static const String products = '/products';
    ```
 
 2. **Adds navigation helper** to `core/lib/src/routes/app_routes.dart`:
+
    ```dart
    static Future<void> navigateToProducts(BuildContext context) {
      return Navigator.pushNamed(context, products);
@@ -115,6 +117,7 @@ The CLI automatically:
    ```
 
 3. **Registers route in switch statement** in `app/lib/routes/app_route_generator.dart`:
+
    ```dart
    case AppRoutes.products:
      return _createRoute(
