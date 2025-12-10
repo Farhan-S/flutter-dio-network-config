@@ -261,7 +261,7 @@ Feature location: ${_green}$featurePath$_reset
 
       if (navHelperIndex != -1) {
         final navigationHelper =
-            "\n  /// Navigate to $snakeName page\n  static Future<void> navigateTo$pascalName(BuildContext context) {\n    return Navigator.pushNamed(context, $camelName);\n  }\n";
+            "\n  /// Navigate to $snakeName page\n  static Future<void> navigateTo$pascalName(BuildContext context) {\n    return Navigator.pushNamed(context, $camelName);\n  }\n\n";
 
         content = content.substring(0, navHelperIndex) +
             navigationHelper +
@@ -374,7 +374,6 @@ Feature location: ${_green}$featurePath$_reset
           final insertPosition = semicolonEnd + 1;
 
           final newRegistration = '''
-
     
     // ${pascalName} route
     AppRouteRegistry.registerRoute(

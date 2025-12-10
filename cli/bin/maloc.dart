@@ -1,15 +1,26 @@
 #!/usr/bin/env dart
 
 import 'dart:io';
+
 import 'package:args/args.dart';
 import 'package:maloc/commands/create_feature.dart';
+import 'package:maloc/commands/remove_feature.dart';
 import 'package:maloc/utils/logger.dart';
 
 void main(List<String> arguments) async {
   final parser = ArgParser()
-    ..addCommand('create', ArgParser()
-      ..addOption('name', abbr: 'n', help: 'Feature name (e.g., products, profile)')
-      ..addFlag('help', abbr: 'h', negatable: false, help: 'Show help'))
+    ..addCommand(
+        'create',
+        ArgParser()
+          ..addOption('name',
+              abbr: 'n', help: 'Feature name (e.g., products, profile)')
+          ..addFlag('help', abbr: 'h', negatable: false, help: 'Show help'))
+    ..addCommand(
+        'remove',
+        ArgParser()
+          ..addOption('name',
+              abbr: 'n', help: 'Feature name to remove (e.g., products)')
+          ..addFlag('help', abbr: 'h', negatable: false, help: 'Show help'))
     ..addFlag('version', abbr: 'v', negatable: false, help: 'Show version')
     ..addFlag('help', abbr: 'h', negatable: false, help: 'Show help');
 
@@ -27,7 +38,7 @@ void main(List<String> arguments) async {
     }
 
     final command = results.command;
-    
+
     if (command == null) {
       Logger.error('No command specified');
       _printHelp(parser);
@@ -40,17 +51,33 @@ void main(List<String> arguments) async {
           _printCreateHelp();
           return;
         }
-        
+
         final name = command['name'] as String?;
         if (name == null || name.isEmpty) {
           Logger.error('Feature name is required');
-          Logger.info('Usage: dio_cli create --name <feature_name>');
+          Logger.info('Usage: maloc create --name <feature_name>');
           exit(1);
         }
-        
+
         await CreateFeatureCommand(name).execute();
         break;
-        
+
+      case 'remove':
+        if (command['help'] == true) {
+          _printRemoveHelp();
+          return;
+        }
+
+        final name = command['name'] as String?;
+        if (name == null || name.isEmpty) {
+          Logger.error('Feature name is required');
+          Logger.info('Usage: maloc remove --name <feature_name>');
+          exit(1);
+        }
+
+        await RemoveFeatureCommand(name).execute();
+        break;
+
       default:
         Logger.error('Unknown command: ${command.name}');
         _printHelp(parser);
@@ -73,6 +100,7 @@ Usage: maloc <command> [options]
 
 Commands:
   create    Create a new feature package with Clean Architecture
+  remove    Remove an existing feature package
 
 Options:
 ${parser.usage}
@@ -81,6 +109,10 @@ Examples:
   # Create a new feature
   maloc create --name products
   maloc create -n user_profile
+
+  # Remove a feature
+  maloc remove --name products
+  maloc remove -n user_profile
 
 Run "maloc <command> --help" for more information about a command.
 ''');
@@ -108,5 +140,29 @@ Example:
   maloc create --name products
 
 This creates: packages/features_products/
+''');
+}
+
+void _printRemoveHelp() {
+  print('''
+Remove an existing feature package
+
+Usage: maloc remove --name <feature_name>
+
+Options:
+  -n, --name    Feature name to remove (required)
+  -h, --help    Show this help message
+
+What gets removed:
+  ✓ Feature directory (packages/features_*)
+  ✓ Dependency from app/pubspec.yaml
+  ✓ Routes from app_routes.dart
+  ✓ Route registration from app_route_generator.dart
+  ✓ Import statement from app_route_generator.dart
+
+Example:
+  maloc remove --name products
+
+⚠️  You will be asked for confirmation before deletion.
 ''');
 }
