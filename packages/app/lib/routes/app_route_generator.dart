@@ -54,8 +54,6 @@ class AppRouteGenerator {
       case AppRoutes.login:
         return _createRoute(const LoginPage(), settings);
 
-      
-      
       default:
         return _createErrorRoute(settings.name);
     }

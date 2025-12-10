@@ -158,7 +158,7 @@ ${_yellow}⚠️  Don't forget to:$_reset
       }
 
       String content = appRoutesFile.readAsStringSync();
-      
+
       // Remove route constant (exact match of what create command generates)
       final featureTitle = snakeName
           .split('_')
@@ -167,7 +167,7 @@ ${_yellow}⚠️  Don't forget to:$_reset
       final routeConstantPattern =
           '\n  // $featureTitle Routes\n  static const String $camelName = \'/$snakeName\';\n';
       content = content.replaceAll(routeConstantPattern, '');
-      
+
       // Remove navigation helper (exact match of what create command generates)
       final navHelperPattern =
           '\n  /// Navigate to $snakeName page\n  static Future<void> navigateTo$pascalName(BuildContext context) {\n    return Navigator.pushNamed(context, $camelName);\n  }\n\n';
@@ -195,7 +195,8 @@ ${_yellow}⚠️  Don't forget to:$_reset
       String content = routeGeneratorFile.readAsStringSync();
 
       // Remove import (exact match)
-      final importPattern = "import 'package:features_$snakeName/features_$snakeName.dart';\n";
+      final importPattern =
+          "import 'package:features_$snakeName/features_$snakeName.dart';\n";
       content = content.replaceAll(importPattern, '');
 
       // Remove switch case (exact match)
