@@ -1,4 +1,4 @@
-# Dio Network Config - Feature-Based Modular Architecture
+# Mono Repo Clean Architecture- Feature-Based Modular Architecture
 
 A production-ready Flutter application demonstrating Clean Architecture with feature-based packages using Melos for monorepo management.
 
