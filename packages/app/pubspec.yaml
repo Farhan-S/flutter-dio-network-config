@@ -31,6 +31,9 @@ dependencies:
   # Dependency Injection
   get_it: ^8.0.2
 
+  # Routing
+  go_router: ^14.6.2
+
   # Network
   dio: ^5.9.0
 

@@ -18,27 +18,49 @@ class NetworkTestBloc extends Bloc<NetworkTestEvent, NetworkTestState> {
     RunAllNetworkTestsEvent event,
     Emitter<NetworkTestState> emit,
   ) async {
-    // Emit running state
+    const totalTests = 8;
+    final completedResults = <dynamic>[];
+
+    // Emit initial running state
     emit(
       const NetworkTestRunning(
         currentResults: [],
         completedCount: 0,
-        totalCount: 8,
+        totalCount: totalTests,
       ),
     );
 
-    // Execute use case
-    final result = await runNetworkTestsUseCase();
+    try {
+      // Execute use case with progress callback
+      final result = await runNetworkTestsUseCase(
+        onTestComplete: (testResult) {
+          // Add to completed results
+          completedResults.add(testResult);
 
-    // Handle result
-    result.fold(
-      (failure) {
-        emit(NetworkTestError(failure.message));
-      },
-      (testSuite) {
-        emit(NetworkTestComplete(testSuite));
-      },
-    );
+          // Emit progress state immediately after each test
+          emit(
+            NetworkTestRunning(
+              currentResults: List.from(completedResults),
+              completedCount: completedResults.length,
+              totalCount: totalTests,
+            ),
+          );
+        },
+      );
+
+      // Handle final result
+      result.fold(
+        (failure) {
+          emit(NetworkTestError(failure.message));
+        },
+        (testSuite) {
+          // Emit final complete state with all results
+          emit(NetworkTestComplete(testSuite));
+        },
+      );
+    } catch (e) {
+      emit(NetworkTestError('Unexpected error: ${e.toString()}'));
+    }
   }
 
   void _onClearNetworkTests(

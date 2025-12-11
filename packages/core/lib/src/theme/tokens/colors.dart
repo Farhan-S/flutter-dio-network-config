@@ -21,7 +21,9 @@ class AppColors {
   static const Color tertiaryLight = Color(0xFFFF6F00); // Orange 900
   static const Color tertiaryDark = Color(0xFFFFB74D); // Orange 300
   static const Color tertiaryContainerLight = Color(0xFFFFE0B2); // Orange 100
-  static const Color tertiaryContainerDark = Color(0xFFE65100); // Orange 900 dark
+  static const Color tertiaryContainerDark = Color(
+    0xFFE65100,
+  ); // Orange 900 dark
 
   // Error colors
   static const Color errorLight = Color(0xFFD32F2F); // Red 700

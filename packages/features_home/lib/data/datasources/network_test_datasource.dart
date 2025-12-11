@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:dio/dio.dart';
 
 import '../models/network_test_model.dart';
 
@@ -176,8 +177,17 @@ class NetworkTestDataSource {
       );
     } catch (e) {
       final duration = DateTime.now().difference(startTime).inMilliseconds;
+
+      // Extract the actual ApiException from DioException if present
+      final actualError = e is DioException && e.error is ApiException
+          ? e.error as ApiException
+          : e;
+
+      // Check if it's the expected error type (404 NotFoundException)
       final isCorrectError =
-          e is NotFoundException || e.toString().contains('404');
+          actualError is NotFoundException ||
+          actualError.toString().contains('404') ||
+          (e is DioException && e.response?.statusCode == 404);
 
       return NetworkTestModel(
         name: 'Error Handling (404)',
@@ -185,8 +195,8 @@ class NetworkTestDataSource {
         success: isCorrectError,
         duration: duration,
         message: isCorrectError
-            ? 'Correctly handled 404 error: ${e.runtimeType}'
-            : 'Wrong error type: $e',
+            ? 'Correctly handled 404 error: ${actualError.runtimeType}'
+            : 'Wrong error type: ${actualError.runtimeType} (expected NotFoundException)',
       );
     }
   }

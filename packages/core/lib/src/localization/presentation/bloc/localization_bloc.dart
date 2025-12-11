@@ -34,27 +34,34 @@ class LocalizationBloc extends Bloc<LocalizationEvent, LocalizationState> {
 
     result.fold(
       (failure) {
-        debugPrint('❌ LocalizationBloc - Failed to load locale: ${failure.message}');
+        debugPrint(
+          '❌ LocalizationBloc - Failed to load locale: ${failure.message}',
+        );
         // Fallback to English on error
-        emit(const LocalizationLoaded(
-          locale: AppLocale.english,
-          isSystemLocale: true,
-        ));
+        emit(
+          const LocalizationLoaded(
+            locale: AppLocale.english,
+            isSystemLocale: true,
+          ),
+        );
       },
       (savedLocale) {
         if (savedLocale != null) {
-          debugPrint('✅ LocalizationBloc - Loaded saved locale: ${savedLocale.displayName}');
-          emit(LocalizationLoaded(
-            locale: savedLocale,
-            isSystemLocale: false,
-          ));
+          debugPrint(
+            '✅ LocalizationBloc - Loaded saved locale: ${savedLocale.displayName}',
+          );
+          emit(LocalizationLoaded(locale: savedLocale, isSystemLocale: false));
         } else {
-          debugPrint('ℹ️  LocalizationBloc - No saved locale, using system default (English)');
+          debugPrint(
+            'ℹ️  LocalizationBloc - No saved locale, using system default (English)',
+          );
           // No saved locale, use system default
-          emit(const LocalizationLoaded(
-            locale: AppLocale.english,
-            isSystemLocale: true,
-          ));
+          emit(
+            const LocalizationLoaded(
+              locale: AppLocale.english,
+              isSystemLocale: true,
+            ),
+          );
         }
       },
     );
@@ -65,22 +72,23 @@ class LocalizationBloc extends Bloc<LocalizationEvent, LocalizationState> {
     ChangeLocaleEvent event,
     Emitter<LocalizationState> emit,
   ) async {
-    debugPrint('🌍 LocalizationBloc - Changing locale to: ${event.locale.displayName}');
+    debugPrint(
+      '🌍 LocalizationBloc - Changing locale to: ${event.locale.displayName}',
+    );
 
     final result = await saveLocaleUseCase(event.locale);
 
     result.fold(
       (failure) {
-        debugPrint('❌ LocalizationBloc - Failed to change locale: ${failure.message}');
+        debugPrint(
+          '❌ LocalizationBloc - Failed to change locale: ${failure.message}',
+        );
         emit(LocalizationError(failure.message));
       },
       (success) {
         if (success) {
           debugPrint('✅ LocalizationBloc - Locale changed successfully');
-          emit(LocalizationLoaded(
-            locale: event.locale,
-            isSystemLocale: false,
-          ));
+          emit(LocalizationLoaded(locale: event.locale, isSystemLocale: false));
         } else {
           debugPrint('❌ LocalizationBloc - Failed to save locale');
           emit(const LocalizationError('Failed to save locale'));
@@ -98,9 +106,8 @@ class LocalizationBloc extends Bloc<LocalizationEvent, LocalizationState> {
 
     // For now, just use English as system default
     // You can enhance this to detect actual system locale
-    emit(const LocalizationLoaded(
-      locale: AppLocale.english,
-      isSystemLocale: true,
-    ));
+    emit(
+      const LocalizationLoaded(locale: AppLocale.english, isSystemLocale: true),
+    );
   }
 }

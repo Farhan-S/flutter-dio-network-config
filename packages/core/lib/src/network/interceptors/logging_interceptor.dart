@@ -53,6 +53,10 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
+    // Pass response first to avoid timeout issues
+    handler.next(response);
+
+    // Log asynchronously after passing response through
     if (kDebugMode && logResponse) {
       developer.log(
         '┌──────────────────────────────────────────────────────────',
@@ -72,12 +76,14 @@ class LoggingInterceptor extends Interceptor {
         name: 'HTTP',
       );
     }
-
-    handler.next(response);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
+    // Pass error first to avoid timeout issues
+    handler.next(err);
+
+    // Log asynchronously after passing error through
     if (kDebugMode && logError) {
       developer.log(
         '┌──────────────────────────────────────────────────────────',
@@ -103,8 +109,6 @@ class LoggingInterceptor extends Interceptor {
         name: 'HTTP',
       );
     }
-
-    handler.next(err);
   }
 
   /// Format headers for logging

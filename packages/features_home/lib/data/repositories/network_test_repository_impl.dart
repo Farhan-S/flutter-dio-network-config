@@ -12,19 +12,36 @@ class NetworkTestRepositoryImpl implements NetworkTestRepository {
   NetworkTestRepositoryImpl(this.dataSource);
 
   @override
-  Future<Either<ApiException, NetworkTestSuiteEntity>> runAllTests() async {
+  Future<Either<ApiException, NetworkTestSuiteEntity>> runAllTests({
+    void Function(NetworkTestEntity)? onTestComplete,
+  }) async {
     try {
       final results = <NetworkTestEntity>[];
 
-      // Run all tests sequentially
-      results.add((await dataSource.testGetRequest()).toEntity());
-      results.add((await dataSource.testGetWithParams()).toEntity());
-      results.add((await dataSource.testPostRequest()).toEntity());
-      results.add((await dataSource.testPutRequest()).toEntity());
-      results.add((await dataSource.testDeleteRequest()).toEntity());
-      results.add((await dataSource.testErrorHandling()).toEntity());
-      results.add((await dataSource.testTimeout()).toEntity());
-      results.add((await dataSource.testRetry()).toEntity());
+      // Helper to run test and notify
+      Future<void> runTest(Future<NetworkTestEntity> Function() test) async {
+        final result = await test();
+        results.add(result);
+        onTestComplete?.call(result);
+      }
+
+      // Run all tests sequentially with progress callbacks
+      await runTest(() async => (await dataSource.testGetRequest()).toEntity());
+      await runTest(
+        () async => (await dataSource.testGetWithParams()).toEntity(),
+      );
+      await runTest(
+        () async => (await dataSource.testPostRequest()).toEntity(),
+      );
+      await runTest(() async => (await dataSource.testPutRequest()).toEntity());
+      await runTest(
+        () async => (await dataSource.testDeleteRequest()).toEntity(),
+      );
+      await runTest(
+        () async => (await dataSource.testErrorHandling()).toEntity(),
+      );
+      await runTest(() async => (await dataSource.testTimeout()).toEntity());
+      await runTest(() async => (await dataSource.testRetry()).toEntity());
 
       // Calculate statistics
       final passedTests = results.where((r) => r.success).length;

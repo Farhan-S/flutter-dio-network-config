@@ -25,10 +25,7 @@ class LocalizationLoaded extends LocalizationState {
   final AppLocale locale;
   final bool isSystemLocale;
 
-  const LocalizationLoaded({
-    required this.locale,
-    this.isSystemLocale = false,
-  });
+  const LocalizationLoaded({required this.locale, this.isSystemLocale = false});
 
   @override
   List<Object?> get props => [locale, isSystemLocale];

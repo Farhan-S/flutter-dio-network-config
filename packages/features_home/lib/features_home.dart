@@ -9,6 +9,9 @@ export 'domain/entities/network_test_entity.dart';
 export 'domain/repositories/network_test_repository.dart';
 export 'domain/usecases/run_network_tests_usecase.dart';
 // Presentation - BLoC
+export 'presentation/bloc/home_bloc.dart';
+export 'presentation/bloc/home_event.dart';
+export 'presentation/bloc/home_state.dart';
 export 'presentation/bloc/network_test_bloc.dart';
 export 'presentation/bloc/network_test_event.dart';
 export 'presentation/bloc/network_test_state.dart';

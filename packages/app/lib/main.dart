@@ -4,16 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'injection_container.dart';
-import 'routes/app_route_generator.dart';
+import 'routes/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Setup dependency injection
   await setupDependencyInjection();
-
-  // Register all feature routes
-  AppRouteGenerator.registerAllRoutes();
 
   // Initialize network layer
   _initializeNetworkLayer();
@@ -65,18 +62,37 @@ void _initializeNetworkLayer() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    // Create router once during initialization
+    _router = AppRouter.createRouter(authBloc: getIt<AuthBloc>());
+
+    // Check authentication status on app start to restore user session
+    // This loads user data if tokens exist in storage
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getIt<AuthBloc>().add(const AuthCheckRequested());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => getIt<AuthBloc>()),
-        BlocProvider(create: (_) => ThemeCubit()),
-        BlocProvider(
-          create: (_) =>
-              getIt<LocalizationBloc>()..add(const LoadSavedLocaleEvent()),
+        BlocProvider.value(value: getIt<AuthBloc>()),
+        BlocProvider.value(value: getIt<ThemeCubit>()),
+        BlocProvider.value(
+          value: getIt<LocalizationBloc>()..add(const LoadSavedLocaleEvent()),
         ),
       ],
       child: BlocBuilder<LocalizationBloc, LocalizationState>(
@@ -87,7 +103,7 @@ class MyApp extends StatelessWidget {
 
           return BlocBuilder<ThemeCubit, ThemeMode>(
             builder: (context, themeMode) {
-              return MaterialApp(
+              return MaterialApp.router(
                 title: 'Clean Architecture App',
                 debugShowCheckedModeBanner: false,
                 theme: AppLightTheme.theme,
@@ -96,8 +112,7 @@ class MyApp extends StatelessWidget {
                 locale: locale,
                 supportedLocales: AppLocale.supportedFlutterLocales,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
-                initialRoute: AppRoutes.splash,
-                onGenerateRoute: AppRouteGenerator.onGenerateRoute,
+                routerConfig: _router,
               );
             },
           );

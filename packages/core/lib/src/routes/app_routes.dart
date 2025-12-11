@@ -1,117 +1,144 @@
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 
 /// Centralized app routes for the entire application
 /// All feature modules should register their routes here
+///
+/// Using go_router path-based routing:
+/// - Use paths with parameters: '/user/:id'
+/// - Use query parameters: '/search?q=term'
+/// - Nested routes use relative paths
 class AppRoutes {
-  // ==================== Route Names ====================
+  // ==================== Route Names (for go_router) ====================
 
   // Splash & Onboarding Routes
-  static const String splash = '/';
-  static const String onboarding = '/onboarding';
+  static const String splash = 'splash';
+  static const String onboarding = 'onboarding';
 
   // Home Routes
-  static const String home = '/home';
-  static const String networkTest = '/network-test';
+  static const String home = 'home';
+  static const String networkTest = 'network-test';
 
   // Auth Routes
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String forgotPassword = '/forgot-password';
+  static const String login = 'login';
+  static const String register = 'register';
+  static const String forgotPassword = 'forgot-password';
 
   // User Routes
-  static const String profile = '/profile';
-  static const String settings = '/settings';
+  static const String profile = 'profile';
+  static const String settings = 'settings';
+
+  // ==================== Route Paths ====================
+
+  // Root paths
+  static const String splashPath = '/';
+  static const String onboardingPath = '/onboarding';
+  static const String homePath = '/home';
+  static const String networkTestPath = '/network-test';
+  static const String loginPath = '/login';
+  static const String registerPath = '/register';
+  static const String forgotPasswordPath = '/forgot-password';
+  static const String profilePath = '/profile';
+  static const String profileWithIdPath = '/profile/:userId';
+  static const String settingsPath = '/settings';
 
   // ==================== Route Parameters ====================
 
   /// Keys for route arguments
   static const String userIdParam = 'userId';
-  static const String emailParam = 'email';
 
-  // ==================== Navigation Helpers ====================
+  // ==================== Navigation Helpers (go_router) ====================
+  // Note: These methods now require GoRouter to be accessible
+  // Import: import 'package:go_router/go_router.dart';
 
-  /// Navigate to splash page
-  static Future<void> navigateToSplash(BuildContext context) {
-    return Navigator.pushNamedAndRemoveUntil(context, splash, (route) => false);
+  /// Navigate to splash page (replace all)
+  static void navigateToSplash(BuildContext context) {
+    context.go(splashPath);
   }
 
-  /// Navigate to onboarding page
-  static Future<void> navigateToOnboarding(BuildContext context) {
-    return Navigator.pushNamedAndRemoveUntil(
-      context,
-      onboarding,
-      (route) => false,
-    );
+  /// Navigate to onboarding page (replace all)
+  static void navigateToOnboarding(BuildContext context) {
+    context.go(onboardingPath);
   }
 
-  /// Navigate to home page
-  static Future<void> navigateToHome(BuildContext context) {
-    return Navigator.pushNamedAndRemoveUntil(context, home, (route) => false);
+  /// Navigate to home page (replace all)
+  static void navigateToHome(BuildContext context) {
+    context.go(homePath);
   }
 
-  /// Navigate to login page
-  static Future<void> navigateToLogin(BuildContext context) {
-    return Navigator.pushNamedAndRemoveUntil(context, login, (route) => false);
+  /// Navigate to login page (replace all)
+  static void navigateToLogin(BuildContext context) {
+    context.go(loginPath);
   }
 
-  /// Navigate to network test page
-  static Future<void> navigateToNetworkTest(BuildContext context) {
-    return Navigator.pushNamed(context, networkTest);
+  /// Navigate to network test page (push)
+  static void navigateToNetworkTest(BuildContext context) {
+    context.push(networkTestPath);
   }
 
   /// Navigate to profile page
-  static Future<void> navigateToProfile(
-    BuildContext context, {
-    String? userId,
-  }) {
-    return Navigator.pushNamed(
-      context,
-      profile,
-      arguments: {userIdParam: userId},
-    );
+  static void navigateToProfile(BuildContext context, {String? userId}) {
+    if (userId != null) {
+      context.push('/profile/$userId');
+    } else {
+      context.push(profilePath);
+    }
+  }
+
+  /// Navigate to register page
+  static void navigateToRegister(BuildContext context) {
+    context.push(registerPath);
+  }
+
+  /// Navigate to forgot password page
+  static void navigateToForgotPassword(BuildContext context) {
+    context.push(forgotPasswordPath);
+  }
+
+  /// Navigate to settings page
+  static void navigateToSettings(BuildContext context) {
+    context.push(settingsPath);
   }
 
   /// Navigate back
   static void navigateBack(BuildContext context) {
-    Navigator.pop(context);
+    context.pop();
   }
 
   /// Check if can pop
   static bool canPop(BuildContext context) {
-    return Navigator.canPop(context);
-  }
-}
-
-/// Route generator function signature
-/// Each feature module should provide this
-typedef RouteFactory = Route<dynamic>? Function(RouteSettings settings);
-
-/// Registry for feature route handlers
-class AppRouteRegistry {
-  static final Map<String, RouteFactory> _routeFactories = {};
-
-  /// Register a route handler for a specific route pattern
-  static void registerRoute(String routeName, RouteFactory factory) {
-    _routeFactories[routeName] = factory;
+    return context.canPop();
   }
 
-  /// Register multiple routes at once
-  static void registerRoutes(Map<String, RouteFactory> factories) {
-    _routeFactories.addAll(factories);
+  /// Go to named route with parameters
+  static void goNamed(
+    BuildContext context,
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, dynamic> queryParameters = const {},
+    Object? extra,
+  }) {
+    context.goNamed(
+      name,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+      extra: extra,
+    );
   }
 
-  /// Get route factory for a route name
-  static RouteFactory? getRouteFactory(String routeName) {
-    return _routeFactories[routeName];
-  }
-
-  /// Clear all registered routes (useful for testing)
-  static void clear() {
-    _routeFactories.clear();
-  }
-
-  /// Get all registered route names
-  static List<String> getAllRouteNames() {
-    return _routeFactories.keys.toList();
+  /// Push named route with parameters
+  static void pushNamed(
+    BuildContext context,
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, dynamic> queryParameters = const {},
+    Object? extra,
+  }) {
+    context.pushNamed(
+      name,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+      extra: extra,
+    );
   }
 }

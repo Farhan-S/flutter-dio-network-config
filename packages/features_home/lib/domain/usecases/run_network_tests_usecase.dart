@@ -10,7 +10,9 @@ class RunNetworkTestsUseCase {
 
   RunNetworkTestsUseCase(this.repository);
 
-  Future<Either<ApiException, NetworkTestSuiteEntity>> call() async {
-    return await repository.runAllTests();
+  Future<Either<ApiException, NetworkTestSuiteEntity>> call({
+    void Function(NetworkTestEntity)? onTestComplete,
+  }) async {
+    return await repository.runAllTests(onTestComplete: onTestComplete);
   }
 }

@@ -26,6 +26,11 @@ Future<void> setupDependencyInjection() async {
     () => LocaleStorage(getIt<SharedPreferences>()),
   );
 
+  // Theme Storage - Singleton
+  getIt.registerLazySingleton<ThemeStorage>(
+    () => ThemeStorage(getIt<SharedPreferences>()),
+  );
+
   // DioClient - Singleton
   getIt.registerLazySingleton<DioClient>(() => DioClient());
 
@@ -154,8 +159,9 @@ Future<void> setupDependencyInjection() async {
 
   // ==================== Presentation Layer ====================
 
-  // Auth BLoC - Factory (new instance each time)
-  getIt.registerFactory<AuthBloc>(
+  // Auth BLoC - Singleton (same instance throughout app lifecycle)
+  // This is critical for maintaining authentication state across the app
+  getIt.registerLazySingleton<AuthBloc>(
     () => AuthBloc(
       loginUseCase: getIt<LoginUseCase>(),
       logoutUseCase: getIt<LogoutUseCase>(),
@@ -186,11 +192,16 @@ Future<void> setupDependencyInjection() async {
     ),
   );
 
-  // Localization BLoC - Factory
-  getIt.registerFactory<LocalizationBloc>(
+  // Localization BLoC - Singleton (persists language selection)
+  getIt.registerLazySingleton<LocalizationBloc>(
     () => LocalizationBloc(
       getSavedLocaleUseCase: getIt<GetSavedLocaleUseCase>(),
       saveLocaleUseCase: getIt<SaveLocaleUseCase>(),
     ),
+  );
+
+  // Theme Cubit - Singleton (persists theme selection)
+  getIt.registerLazySingleton<ThemeCubit>(
+    () => ThemeCubit(getIt<ThemeStorage>()),
   );
 }
