@@ -48,3 +48,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/auth/
+    - assets/images/dashboard/
+    - assets/images/common/
+    - assets/icons/
+    - assets/animations/
+    - assets/fonts/

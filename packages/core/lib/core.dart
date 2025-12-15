@@ -3,6 +3,9 @@ library;
 // Routes
 export 'package:go_router/go_router.dart';
 
+// Constants
+export 'src/constants/app_assets.dart';
+
 // Localization
 export 'src/localization/localization.dart';
 export 'src/network/api_exceptions.dart';
