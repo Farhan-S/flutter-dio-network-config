@@ -20,12 +20,23 @@ class HomeLoading extends HomeState {
 
 /// Loaded state with data
 class HomeLoaded extends HomeState {
-  final DateTime lastUpdated;
+  final int lastUpdatedTimestamp;
+  final int selectedIndex;
 
-  const HomeLoaded({required this.lastUpdated});
+  const HomeLoaded({
+    required this.lastUpdatedTimestamp,
+    this.selectedIndex = 0,
+  });
+
+  HomeLoaded copyWith({int? lastUpdatedTimestamp, int? selectedIndex}) {
+    return HomeLoaded(
+      lastUpdatedTimestamp: lastUpdatedTimestamp ?? this.lastUpdatedTimestamp,
+      selectedIndex: selectedIndex ?? this.selectedIndex,
+    );
+  }
 
   @override
-  List<Object?> get props => [lastUpdated];
+  List<Object?> get props => [lastUpdatedTimestamp, selectedIndex];
 }
 
 /// Error state

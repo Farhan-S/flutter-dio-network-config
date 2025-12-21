@@ -8,6 +8,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(const HomeInitial()) {
     on<LoadHomeDataEvent>(_onLoadHomeData);
     on<RefreshHomeDataEvent>(_onRefreshHomeData);
+    on<NavigationIndexChanged>(_onNavigationIndexChanged);
   }
 
   Future<void> _onLoadHomeData(
@@ -20,7 +21,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // Simulate loading data
       await Future.delayed(const Duration(milliseconds: 500));
 
-      emit(HomeLoaded(lastUpdated: DateTime.now()));
+      emit(
+        HomeLoaded(lastUpdatedTimestamp: DateTime.now().millisecondsSinceEpoch),
+      );
     } catch (e) {
       emit(HomeError('Failed to load home data: ${e.toString()}'));
     }
@@ -34,9 +37,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
 
-      emit(HomeLoaded(lastUpdated: DateTime.now()));
+      final currentState = state;
+      final selectedIndex = currentState is HomeLoaded
+          ? currentState.selectedIndex
+          : 0;
+
+      emit(
+        HomeLoaded(
+          lastUpdatedTimestamp: DateTime.now().millisecondsSinceEpoch,
+          selectedIndex: selectedIndex,
+        ),
+      );
     } catch (e) {
       emit(HomeError('Failed to refresh home data: ${e.toString()}'));
+    }
+  }
+
+  void _onNavigationIndexChanged(
+    NavigationIndexChanged event,
+    Emitter<HomeState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is HomeLoaded) {
+      emit(currentState.copyWith(selectedIndex: event.index));
     }
   }
 }

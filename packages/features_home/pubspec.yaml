@@ -30,6 +30,8 @@ dependencies:
     path: ../core
   features_auth:
     path: ../features_auth
+  features_user:
+    path: ../features_user
 
 dev_dependencies:
   flutter_test:

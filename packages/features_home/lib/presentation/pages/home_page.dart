@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
+import '../widgets/floating_bottom_navigation.dart';
+import '../widgets/glass_navigation_drawer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -62,215 +64,260 @@ class _HomePageContent extends StatelessWidget {
   }
 }
 
-class _HomePageView extends StatelessWidget {
+class _HomePageView extends StatefulWidget {
   const _HomePageView();
+
+  @override
+  State<_HomePageView> createState() => _HomePageViewState();
+}
+
+class _HomePageViewState extends State<_HomePageView> {
+  void _onItemTapped(int index) {
+    context.read<HomeBloc>().add(NavigationIndexChanged(index));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, homeState) {
-          // Handle HomeBloc loading state
-          if (homeState is HomeLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          // Handle HomeBloc error state
-          if (homeState is HomeError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text(
-                    homeState.message,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () =>
-                        context.read<HomeBloc>().add(const LoadHomeDataEvent()),
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          // Home data is loaded, show content with auth state
-          return BlocConsumer<AuthBloc, AuthState>(
-            listenWhen: (previous, current) {
-              // Listen to all state changes
-              debugPrint(
-                '🏠 HomePage - State changed: ${previous.runtimeType} -> ${current.runtimeType}',
-              );
-              return true;
-            },
-            buildWhen: (previous, current) {
-              // Rebuild on all state changes
-              debugPrint('🏠 HomePage - Rebuilding: ${current.runtimeType}');
-              return true;
-            },
-            listener: (context, state) {
-              debugPrint(
-                '🏠 HomePage - Listener triggered: ${state.runtimeType}',
-              );
-
-              // Handle logout success
-              if (state is AuthUnauthenticated) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(AppLocalizations.of(context).logout),
-                    backgroundColor: Colors.orange,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-                // Navigate to login page
-                AppRoutes.navigateToLogin(context);
+      drawer: const GlassNavigationDrawer(),
+      body: Stack(
+        children: [
+          BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, homeState) {
+              // Handle HomeBloc loading state
+              if (homeState is HomeLoading) {
+                return const Center(child: CircularProgressIndicator());
               }
-              // Handle auth errors
-              else if (state is AuthError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating,
+
+              // Handle HomeBloc error state
+              if (homeState is HomeError) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Colors.red,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        homeState.message,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => context.read<HomeBloc>().add(
+                          const LoadHomeDataEvent(),
+                        ),
+                        child: const Text('Retry'),
+                      ),
+                    ],
                   ),
                 );
               }
-            },
-            builder: (context, state) {
-              debugPrint(
-                '🏠 HomePage - Building with state: ${state.runtimeType}',
-              );
 
-              final isAuthenticated = state is AuthAuthenticated;
-              final isLoading = state is AuthLoading;
-
-              debugPrint(
-                '🏠 HomePage - isAuthenticated: $isAuthenticated, isLoading: $isLoading',
-              );
-
-              return RefreshIndicator(
-                onRefresh: () async {
-                  context.read<HomeBloc>().add(const RefreshHomeDataEvent());
-                  await Future.delayed(const Duration(milliseconds: 600));
+              // Home data is loaded, show content with auth state
+              return BlocConsumer<AuthBloc, AuthState>(
+                listenWhen: (previous, current) {
+                  // Listen to all state changes
+                  debugPrint(
+                    '🏠 HomePage - State changed: ${previous.runtimeType} -> ${current.runtimeType}',
+                  );
+                  return true;
                 },
-                child: CustomScrollView(
-                  slivers: [
-                    // App Bar
-                    SliverAppBar(
-                      expandedHeight: 200,
-                      pinned: true,
-                      actions: [
-                        // Theme toggle button
-                        BlocBuilder<ThemeCubit, ThemeMode>(
-                          builder: (context, themeMode) {
-                            return IconButton(
-                              icon: Icon(
-                                themeMode == ThemeMode.dark
-                                    ? Icons.light_mode
-                                    : Icons.dark_mode,
-                              ),
-                              onPressed: () {
-                                context.read<ThemeCubit>().toggleTheme();
+                buildWhen: (previous, current) {
+                  // Rebuild on all state changes
+                  debugPrint(
+                    '🏠 HomePage - Rebuilding: ${current.runtimeType}',
+                  );
+                  return true;
+                },
+                listener: (context, state) {
+                  debugPrint(
+                    '🏠 HomePage - Listener triggered: ${state.runtimeType}',
+                  );
+
+                  // Handle logout success
+                  if (state is AuthUnauthenticated) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context).logout),
+                        backgroundColor: Colors.orange,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                    // Navigate to login page
+                    AppRoutes.navigateToLogin(context);
+                  }
+                  // Handle auth errors
+                  else if (state is AuthError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  debugPrint(
+                    '🏠 HomePage - Building with state: ${state.runtimeType}',
+                  );
+
+                  final isAuthenticated = state is AuthAuthenticated;
+                  final isLoading = state is AuthLoading;
+
+                  debugPrint(
+                    '🏠 HomePage - isAuthenticated: $isAuthenticated, isLoading: $isLoading',
+                  );
+
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<HomeBloc>().add(
+                        const RefreshHomeDataEvent(),
+                      );
+                      await Future.delayed(const Duration(milliseconds: 600));
+                    },
+                    child: CustomScrollView(
+                      slivers: [
+                        // App Bar
+                        SliverAppBar(
+                          expandedHeight: 200,
+                          pinned: true,
+                          actions: [
+                            // Theme toggle button
+                            BlocBuilder<ThemeCubit, ThemeMode>(
+                              builder: (context, themeMode) {
+                                return IconButton(
+                                  icon: Icon(
+                                    themeMode == ThemeMode.dark
+                                        ? Icons.light_mode
+                                        : Icons.dark_mode,
+                                  ),
+                                  onPressed: () {
+                                    context.read<ThemeCubit>().toggleTheme();
+                                  },
+                                  tooltip: 'Toggle theme',
+                                );
                               },
-                              tooltip: 'Toggle theme',
-                            );
-                          },
+                            ),
+                          ],
+                          flexibleSpace: FlexibleSpaceBar(
+                            title: Text(
+                              AppLocalizations.of(context).appTitle,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(blurRadius: 10, color: Colors.black26),
+                                ],
+                              ),
+                            ),
+                            background: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surface,
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outline,
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.circle_outlined,
+                                  size: 60,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.3),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Content
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const SizedBox(height: 16),
+
+                                // User Profile Card (if authenticated)
+                                if (state is AuthAuthenticated)
+                                  _buildUserProfileCard(context, state),
+
+                                // Authentication Status Card
+                                _buildAuthStatusCard(
+                                  context,
+                                  state,
+                                  isAuthenticated,
+                                  isLoading,
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                // Quick Actions
+                                _buildQuickActions(
+                                  context,
+                                  isAuthenticated,
+                                  state,
+                                ),
+
+                                const SizedBox(height: 24),
+
+                                // Theme Demo Section
+                                _buildThemeDemoSection(context),
+
+                                const SizedBox(height: 24),
+
+                                // Language Selector Section
+                                _buildLanguageSection(context),
+
+                                const SizedBox(height: 24),
+
+                                // Features Section
+                                _buildFeaturesSection(context),
+
+                                const SizedBox(height: 24),
+
+                                // Architecture Info
+                                _buildArchitectureInfo(context),
+
+                                const SizedBox(height: 120),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
-                      flexibleSpace: FlexibleSpaceBar(
-                        title: Text(
-                          AppLocalizations.of(context).appTitle,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            shadows: [
-                              Shadow(blurRadius: 10, color: Colors.black26),
-                            ],
-                          ),
-                        ),
-                        background: Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Theme.of(context).colorScheme.outline,
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.circle_outlined,
-                              size: 60,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.primary.withValues(alpha: 0.3),
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
-
-                    // Content
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const SizedBox(height: 16),
-
-                            // User Profile Card (if authenticated)
-                            if (state is AuthAuthenticated)
-                              _buildUserProfileCard(context, state),
-
-                            // Authentication Status Card
-                            _buildAuthStatusCard(
-                              context,
-                              state,
-                              isAuthenticated,
-                              isLoading,
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // Quick Actions
-                            _buildQuickActions(context, isAuthenticated, state),
-
-                            const SizedBox(height: 24),
-
-                            // Theme Demo Section
-                            _buildThemeDemoSection(context),
-
-                            const SizedBox(height: 24),
-
-                            // Language Selector Section
-                            _buildLanguageSection(context),
-
-                            const SizedBox(height: 24),
-
-                            // Features Section
-                            _buildFeaturesSection(context),
-
-                            const SizedBox(height: 24),
-
-                            // Architecture Info
-                            _buildArchitectureInfo(context),
-
-                            const SizedBox(height: 32),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               );
             },
-          );
-        },
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                final selectedIndex = state is HomeLoaded
+                    ? state.selectedIndex
+                    : 0;
+                return FloatingBottomNavigation(
+                  selectedIndex: selectedIndex,
+                  onItemTapped: _onItemTapped,
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

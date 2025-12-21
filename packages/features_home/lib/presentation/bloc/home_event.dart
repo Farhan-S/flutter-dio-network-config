@@ -17,3 +17,13 @@ class LoadHomeDataEvent extends HomeEvent {
 class RefreshHomeDataEvent extends HomeEvent {
   const RefreshHomeDataEvent();
 }
+
+/// Event to change navigation index
+class NavigationIndexChanged extends HomeEvent {
+  final int index;
+
+  const NavigationIndexChanged(this.index);
+
+  @override
+  List<Object?> get props => [index];
+}
